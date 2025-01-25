@@ -75,9 +75,9 @@ const NodeContent = (props: NodeContentProps) => {
         const label = data.label || key;
         
         if (displayData === 'group') {
-            const groupDisabled = data.disabled !== undefined ? data.disabled : props.groups?.[key]?.disabled ?? false;
-            const groupHidden = data.hidden !== undefined ? data.hidden : props.groups?.[key]?.hidden ?? false;
-            console.log('groupHidden', label, data.hidden, groupHidden);
+            const group = props.groups?.[key];
+            const groupDisabled = group ? (group.disabled !== undefined ? group.disabled : disabled) : false;
+            const groupHidden = group ? (group.hidden !== undefined ? group.hidden : hidden) : false;
 
             return (
                 <GroupField
@@ -95,9 +95,11 @@ const NodeContent = (props: NodeContentProps) => {
         }
         
         if (displayData === 'collapse') {
-            const open = props.groups?.[key]?.open || data.open || false;
-            const groupDisabled = props.groups?.[key]?.disabled || data.disabled || false;
-            const groupHidden = props.groups?.[key]?.hidden || data.hidden || false;
+            const group = props.groups?.[key];
+            const open = group ? (group.open !== undefined ? group.open : data.open) : false;
+            const groupDisabled = group ? (group.disabled !== undefined ? group.disabled : disabled) : false;
+            const groupHidden = group ? (group.hidden !== undefined ? group.hidden : hidden) : false;
+
             return (
                 <AccordionField
                     key={key}

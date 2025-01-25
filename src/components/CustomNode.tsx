@@ -247,6 +247,7 @@ const CustomNode = memo((props: NodeProps<CustomNodeType>) => {
         return false;
     }
 
+    // groups properties
     if (!deepEqual(prevProps.data.groups, nextProps.data.groups)) {
         return false;
     }

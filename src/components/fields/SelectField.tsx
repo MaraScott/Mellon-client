@@ -13,29 +13,18 @@ const SelectField = ({ fieldKey, value, style, disabled, hidden, label, options,
 
             if (!target) return;
 
-            if (target.endsWith('_group')) {
-                console.log('target', target, isHidden);
-                updateStore?.(target, { hidden: isHidden }, 'group');
-            } else {
-                updateStore?.(target, isHidden, 'hidden');
+            if (!Array.isArray(target)) {
+                target = [target];
             }
+
+            target.forEach((t: string) => {
+                if (t.endsWith('_group')) {
+                    updateStore?.(t, { hidden: isHidden }, 'group');
+                } else {
+                    updateStore?.(t, isHidden, 'hidden');
+                }
+            });
         });
-
-        // const items = Array.isArray(options)
-        //     ? options.map((option: any) => ({ key: option.value }))
-        //     : Object.keys(options).map(k => ({ key: k }));
-
-        // items.forEach(({ key }: { key: string }) => {
-        //     const isHidden = key !== value;
-
-        //     if (!key || key.startsWith('__')) return;
-
-        //     if (key.endsWith("_group")) {
-        //         updateStore?.(key, { hidden: isHidden }, 'group');
-        //     } else {
-        //         updateStore?.(key, isHidden, 'hidden');
-        //     }
-        // });
     };
 
     const menuItems = Array.isArray(options) ? (

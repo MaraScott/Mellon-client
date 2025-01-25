@@ -39,6 +39,8 @@ Then you can start the development server with:
 npm run dev
 ```
 
+**Remember** to `npm install` every time `package.json` is updated!
+
 When done you need to run `npm run build` and copy the compiled directory into the `web` folder of [Mellon](https://github.com/cubiq/Mellon) server.
 
 ## Contact
