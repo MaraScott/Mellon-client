@@ -21,7 +21,7 @@
     "noFallthroughCasesInSwitch": true,
     //"noUncheckedSideEffectImports": true
 
-    "types": ["node"]
+    "types": ["node", "@types/wicg-file-system-access"]
   },
   "include": ["src"]
 }

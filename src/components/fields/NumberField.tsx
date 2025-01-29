@@ -8,7 +8,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { FieldProps } from "../NodeContent";
 import { useTheme } from '@mui/material/styles';
 import { useEffect, useRef, useState } from "react";
-
+import getDecimalPlaces from "../utils/getDecimalPlaces";
 const NumberField = ({
     fieldKey,
     fieldType,
@@ -32,7 +32,7 @@ const NumberField = ({
     const displaySlider = fieldType === 'slider' && min !== undefined && max !== undefined;
     const minValue = min !== undefined ? min : -Number.MAX_SAFE_INTEGER;
     const maxValue = max !== undefined ? max : Number.MAX_SAFE_INTEGER;
-    const decimals = dataType === 'float' ? (step?.toString()?.split('.')?.[1]?.length || 1) : 0;
+    const decimals = dataType === 'float' ? getDecimalPlaces(step) : 0;
     const increment = step !== undefined ? step : (dataType === 'float' ? 0.1 : 1);
 
     const formatValue = (value: number | string) => {

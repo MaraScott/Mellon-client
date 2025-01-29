@@ -22,7 +22,7 @@ import CustomField from "./fields/CustomField";
 import UIDropdownIcon from "./fields/UIDropdownIcon";
 import UIImageField from "./fields/UIImageField";
 import UIThreeField from "./fields/UIThreeField";
-
+import FileBrowserField from "./fields/FileBrowserField";
 
 // These are the props sent to the fields
 export type FieldProps = {
@@ -177,6 +177,8 @@ const FieldMemo = memo((props: FieldProps) => {
             return <TagsField {...props} />;
         case 'custom':
             return <CustomField {...props} />;
+        case 'filebrowser':
+            return <FileBrowserField {...props} />;
         case 'ui_image':
             return <UIImageField {...props} />;
         case 'ui_dropdownicon':

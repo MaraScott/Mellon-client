@@ -1,18 +1,24 @@
-// TODO: NOT WORKING, need to find a better way to transmit data to a three.js viewer
-
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 const ThreePreview = lazy(() => import('./UIThreePreview'));
 
 import { FieldProps } from "../NodeContent";
 import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const UIThreeFields = ({ fieldKey, value, style, disabled, hidden }: FieldProps) => {
     return (
         <Box
+            data-key={fieldKey}
             sx={{ p: 0, m: 0, mt: 1, mb: 1, ...style }}
             className={`nodrag nowheel ${disabled ? 'mellon-disabled' : ''} ${hidden ? 'mellon-hidden' : ''}`}
         >
-            <ThreePreview nodeId="test" dataKey={fieldKey} value={value} />
+            <Suspense fallback={
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '768px', height: '768px' }}>
+                    <CircularProgress />
+                </Box>
+            }>
+                <ThreePreview value={value} />
+            </Suspense>
         </Box>
     );
 };

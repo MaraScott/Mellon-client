@@ -139,20 +139,20 @@ export const useWebsocketState = createWithEqualityFn<WebsocketState>((set, get)
                 useNodeState.getState().setParam(message.nodeId, message.key, message.data);
 
                 // update the image in the UI, without storing it in the node state
-                // memory efficient, but not doesn't survive a page reload
+                // memory efficient, but doesn't survive a page reload
                 // const el = document.querySelector(`#${CSS.escape(message.nodeId)} [data-key="${message.key}"] img`);
                 // if (el) {
                 //     el.setAttribute('src', `data:image/webp;base64,${message.data}`);
                 // }
             }
             else if (message.type === '3d') {
-                if (!message.data || !message.nodeId || !message.key) {
+                if (!message.nodeId || !message.key) {
                     console.error('Invalid 3D model message. Ignoring.');
                     return;
                 }
-                const dataUrl = `data:model/gltf-binary;base64,${message.data}`;
-                get().updateThreeData(message.nodeId, message.key, dataUrl);
-                    
+                const data = message.data || { url: null };
+                useNodeState.getState().setParam(message.nodeId, message.key, data);
+
                 // For blob data
                 // const blob = new Blob([message.data], { type: 'model/gltf-binary' });
                 // const url = URL.createObjectURL(blob);
