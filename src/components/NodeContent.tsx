@@ -23,6 +23,7 @@ import UIDropdownIcon from "./fields/UIDropdownIcon";
 import UIImageField from "./fields/UIImageField";
 import UIThreeField from "./fields/UIThreeField";
 import FileBrowserField from "./fields/FileBrowserField";
+import UITextField from "./fields/UITextField";
 
 // These are the props sent to the fields
 export type FieldProps = {
@@ -183,8 +184,10 @@ const FieldMemo = memo((props: FieldProps) => {
             return <UIImageField {...props} />;
         case 'ui_dropdownicon':
             return <UIDropdownIcon {...props} />;
-        case 'ui_3d': // TODO: NOT WORKING, need to find a better way to transmit data to a three.js viewer
+        case 'ui_3d':
             return <UIThreeField {...props} />;
+        case 'ui_text':
+            return <UITextField {...props} />;
         default:
             return <TextField {...props} />;
     }
@@ -201,7 +204,7 @@ const getFieldType = (displayData: string, dataType: string, data: any) => {
         return displayData;
     }
 
-    if (dataType === 'boolean') {
+    if (dataType === 'boolean' || dataType === 'bool') {
         return displayData === 'checkbox' || displayData === 'icontoggle' ? displayData : 'switch';
     }
 
@@ -212,6 +215,8 @@ const getFieldType = (displayData: string, dataType: string, data: any) => {
             return 'ui_dropdownicon';
         } else if (dataType.toLowerCase() === '3d') {
             return 'ui_3d';
+        } else if (dataType.toLowerCase() === 'text') {
+            return 'ui_text';
         }
     }
 

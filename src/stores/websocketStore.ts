@@ -137,13 +137,6 @@ export const useWebsocketState = createWithEqualityFn<WebsocketState>((set, get)
                     return;
                 }
                 useNodeState.getState().setParam(message.nodeId, message.key, message.data);
-
-                // update the image in the UI, without storing it in the node state
-                // memory efficient, but doesn't survive a page reload
-                // const el = document.querySelector(`#${CSS.escape(message.nodeId)} [data-key="${message.key}"] img`);
-                // if (el) {
-                //     el.setAttribute('src', `data:image/webp;base64,${message.data}`);
-                // }
             }
             else if (message.type === '3d') {
                 if (!message.nodeId || !message.key) {
@@ -157,6 +150,13 @@ export const useWebsocketState = createWithEqualityFn<WebsocketState>((set, get)
                 // const blob = new Blob([message.data], { type: 'model/gltf-binary' });
                 // const url = URL.createObjectURL(blob);
                 // el.setAttribute('url', url);
+            }
+            else if (message.type === 'text') {
+                if (!message.nodeId || !message.key || !message.data) {
+                    console.error('Invalid text message. Ignoring.');
+                    return;
+                }
+                useNodeState.getState().setParam(message.nodeId, message.key, message.data);
             }
             else if (message.type === 'executed') {
                 console.info('executed', message);
