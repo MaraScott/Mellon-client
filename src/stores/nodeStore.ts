@@ -16,6 +16,7 @@ import { createWithEqualityFn } from 'zustand/traditional';
 import { nanoid } from 'nanoid';
 
 import config from '../../config';
+import { useUndoRedoStore } from "../stores/undoRedoStore";
 
 export type GroupParams = {
     key: string;
@@ -160,6 +161,7 @@ const buildPath = (
 export type NodeState = {
     nodes: CustomNodeType[];
     edges: Edge[];
+    activeHistory: boolean;
     onNodesChange: OnNodesChange<CustomNodeType>;
     onEdgesChange: OnEdgesChange;
     onEdgeDoubleClick: (id: string) => void;
@@ -170,22 +172,21 @@ export type NodeState = {
     getParam: (id: string, param: string, key: keyof NodeParams) => any;
     setNodeExecuted: (id: string, cache: boolean, time: number, memory: number) => void;
     exportGraph: (sid: string) => GraphExport;
+    setActiveHistory: (active: boolean) => void;
     updateLocalStorage: () => void;
 };
 
 export const useNodeState = createWithEqualityFn<NodeState>((set, get) => ({
     nodes: JSON.parse(localStorage.getItem('workflow') || '{"nodes":[]}').nodes || [],
     edges: JSON.parse(localStorage.getItem('workflow') || '{"edges":[]}').edges || [],
+    activeHistory: true,
 
     onNodesChange: async (changes: NodeChange<CustomNodeType>[]) => {
         const newNodes = applyNodeChanges(changes, get().nodes);
         set({ nodes: newNodes });
 
         // Save to localStorage after changes
-        const stored = localStorage.getItem('workflow');
-        const { viewport } = stored ? JSON.parse(stored) : { viewport: { x: 0, y: 0, zoom: 1 } };
-        const workflow: StoredWorkflow = { nodes: newNodes, edges: get().edges, viewport };
-        localStorage.setItem('workflow', JSON.stringify(workflow));
+        get().updateLocalStorage();
         
         // delete the server cache for the deleted nodes
         if (changes.some(change => change.type === 'remove')) {
@@ -359,11 +360,13 @@ export const useNodeState = createWithEqualityFn<NodeState>((set, get) => ({
         
         get().updateLocalStorage();
     },
+    setActiveHistory: (active: boolean) => set({ activeHistory: active }),
     updateLocalStorage: () => {
         const stored = localStorage.getItem('workflow');
         const { viewport } = stored ? JSON.parse(stored) : { viewport: { x: 0, y: 0, zoom: 1 } };
         const workflow: StoredWorkflow = { nodes: get().nodes, edges: get().edges, viewport };
         localStorage.setItem('workflow', JSON.stringify(workflow));
+        if (get().activeHistory) useUndoRedoStore.getState().setPresent({ nodes: workflow.nodes, edges: workflow.edges });
     },
     setParam: (id: string, param: string, value: any, key?: keyof NodeParams) => {
         const k = key ?? 'value';
